@@ -5,3 +5,6 @@ defaults write com.apple.dock autohide-delay -float 1000; killall Dock
 # Restore default behavior.
 # defaults delete com.apple.dock autohide-delay; killall Dock
 
+# Disable mouse acceleration.
+defaults write .GlobalPreferences com.apple.mouse.scaling -1
+
