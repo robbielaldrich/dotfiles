@@ -1,0 +1,9 @@
+[alias]
+  up = !git push -u origin HEAD
+  pu = !git push
+  cb = !git checkout -b
+  st = status
+  pb = pull --rebase --prune
+  co = checkout
+[init]
+  defaultBranch = main
