@@ -1,56 +1,48 @@
--- Plugins.
-local use = require('packer').use
-require('packer').startup(function()
-  use 'wbthomason/packer.nvim' -- Package manager
-  use 'neovim/nvim-lspconfig' -- Collection of configurations for the built-in LSP client
-  use 'ziglang/zig.vim' -- Collection of configurations for the built-in LSP client
-  use 'hrsh7th/cmp-nvim-lsp'
-  use 'hrsh7th/cmp-buffer'
-  use 'hrsh7th/cmp-path'
-  use 'hrsh7th/cmp-cmdline'
-  use 'hrsh7th/nvim-cmp'
-  use 'hrsh7th/cmp-vsnip'
-  use 'hrsh7th/vim-vsnip'
-end)
+local execute = vim.api.nvim_command
+local fn = vim.fn
+vim.cmd('packadd nvim-lspconfig')
+
+require'lspconfig'.pyright.setup{}
+require'lspconfig'.gopls.setup{}
+
+-- Suggested keymappings taken from https://github.com/neovim/nvim-lspconfig/blob/master/README.md.
+-- See `:help vim.diagnostic.*` for documentation on any of the below functions
+vim.keymap.set('n', '<space>e', vim.diagnostic.open_float)
+vim.keymap.set('n', '[d', vim.diagnostic.goto_prev)
+vim.keymap.set('n', ']d', vim.diagnostic.goto_next)
+vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist)
+-- Use LspAttach autocommand to only map the following keys
+-- after the language server attaches to the current buffer
+vim.api.nvim_create_autocmd('LspAttach', {
+  group = vim.api.nvim_create_augroup('UserLspConfig', {}),
+  callback = function(ev)
+    -- Enable completion triggered by <c-x><c-o>
+    vim.bo[ev.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
+
+    -- Buffer local mappings.
+    -- See `:help vim.lsp.*` for documentation on any of the below functions
+    local opts = { buffer = ev.buf }
+    vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
+    vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
+    vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
+    vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
+    vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
+    vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, opts)
+    vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, opts)
+    vim.keymap.set('n', '<space>wl', function()
+      print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+    end, opts)
+    vim.keymap.set('n', '<space>D', vim.lsp.buf.type_definition, opts)
+    vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, opts)
+    vim.keymap.set({ 'n', 'v' }, '<space>ca', vim.lsp.buf.code_action, opts)
+    vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
+    vim.keymap.set('n', '<space>f', function()
+      vim.lsp.buf.format { async = true }
+    end, opts)
+  end,
+})
 
 
--- Wrapper for keybindings.
--- https://blog.devgenius.io/create-custom-keymaps-in-neovim-with-lua-d1167de0f2c2
-function map(mode, lhs, rhs, opts)
-    local options = { noremap = true }
-    if opts then
-        options = vim.tbl_extend("force", options, opts)
-    end
-    vim.api.nvim_set_keymap(mode, lhs, rhs, options)
-end
-
-local o = vim.o -- Global options.
-local wo = vim.wo -- Window options.
-local bo = vim.bo -- Buffer options.
-
--- Stuff.
-vim.g.mapleader = ","
-
-vim.api.nvim_exec("set clipboard+=unnamedplus", true)
-
-o.termguicolors = true
-
-vim.cmd("colorscheme everforest")
-
-wo.number = true
-
-vim.o.autowrite = true
-o.updatetime = 100
-
-map("n", "<leader>d", ":put =strftime('%a %d %b %Y')<CR>") -- Insert date.
-
-bo.tabstop = 2
-bo.shiftwidth = 2
-bo.expandtab = true
-
-vim.api.nvim_command('autocmd FileType proto setlocal shiftwidth=4 tabstop=4')
-
-require('my_lsp_config')
-
-
+-- Yank to clipboard.
+vim.opt.clipboard = "unnamedplus"
 
