@@ -27,6 +27,7 @@
   pb = pull --rebase --prune
   co = checkout
   ss = stash save
+  ffm = merge --ff-only origin/main
   pr = "!f() { open "https://github.geo.apple.com/geo-flyover/$(basename "$(git rev-parse --show-toplevel)")/pull/new/$(git rev-parse --abbrev-ref HEAD)"; };f"
 [init]
   defaultBranch = main
