@@ -1,9 +1,36 @@
+[user]
+	name = robert_aldrich
+	email = robert_aldrich@apple.com
+[credential]
+	helper = store
+[core]
+	excludesFile = ~/.gitignore
+	editor = vim
+	hooksPath = .githooks-9989d6fe
+[commit]
+	template = /Users/robert_aldrich/.stCommitMsg
+	gpgsign = true
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+[url "ssh://git@github.geo.apple.com"]
+    insteadOf = https://github.geo.apple.com
+[url "ssh://git@github.pie.apple.com"]
+    insteadOf = https://github.pie.apple.com
 [alias]
   up = !git push -u origin HEAD
   pu = !git push
-  cb = !git checkout -b
+  cb = !git checkout -b 
   st = status
   pb = pull --rebase --prune
   co = checkout
+  ss = stash save
+  pr = "!f() { open "https://github.geo.apple.com/geo-flyover/$(basename "$(git rev-parse --show-toplevel)")/pull/new/$(git rev-parse --abbrev-ref HEAD)"; };f"
 [init]
   defaultBranch = main
+[gpg "x509"]
+	program = /usr/local/bin/ac-sign
+[gpg]
+	format = x509
