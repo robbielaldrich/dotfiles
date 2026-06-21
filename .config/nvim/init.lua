@@ -1,3 +1,6 @@
+vim.g.mapleader = ' '
+vim.g.maplocalleader = ' '
+
 -- Vim options copied from https://justinhj.github.io/2026/04/06/refreshing-your-neovim-config-for-0-12-0.html.
 
 -- Prevents showing extra messages when using completion.
@@ -30,7 +33,30 @@ vim.opt.smartindent = true
 vim.opt.smarttab = true
 
 -- Enables the overall built-in neovim completion feature.
-vim.o.autocomplete = true 
+vim.o.autocomplete = true
+
+-- New UI opt-in
+require('vim._core.ui2').enable({})
+
+-- Packages (must come before any require() calls for these plugins).
+vim.pack.add({
+  'https://github.com/folke/tokyonight.nvim',
+  'https://github.com/neovim/nvim-lspconfig',
+
+  -- Run `:TSInstall <language>` once installed to get that language's treesitter support.
+  -- Specify 'main' branch; 'master' is dep.
+  { src = 'https://github.com/nvim-treesitter/nvim-treesitter',
+    version = 'main' },
+
+  -- Telescope and its required dependency.
+  'https://github.com/nvim-lua/plenary.nvim',
+  'https://github.com/nvim-telescope/telescope.nvim',
+})
+
+vim.cmd[[colorscheme tokyonight]]
+
+-- LSP.
+require'lspconfig'.ols.setup {}
 
 vim.api.nvim_create_autocmd("LspAttach", {
   group = vim.api.nvim_create_augroup("lsp_completion", { clear = true }),
@@ -42,31 +68,27 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
     local client = vim.lsp.get_client_by_id(client_id)
     if client and client:supports_method("textDocument/completion") then
-      -- Enable native LSP completion for this client + buffer
-      vim.lsp.completion.enable(true, client_id, args.buf, {
-        autotrigger = true,   -- auto-show menu as you type (recommended)
-        -- You can also set { autotrigger = false } and trigger manually with <C-x><C-o>
-      })
+      vim.lsp.completion.enable(true, client_id, args.buf, { autotrigger = true })
     end
+
+    local buf = args.buf
+    local t = require('telescope.builtin')
+    vim.keymap.set('n', 'gd', t.lsp_definitions,                    { buffer = buf, desc = 'Go to definition' })
+    vim.keymap.set('n', 'gr', t.lsp_references,                     { buffer = buf, desc = 'Find references' })
+    vim.keymap.set('n', 'gi', t.lsp_implementations,                { buffer = buf, desc = 'Go to implementation' })
+    vim.keymap.set('n', 'gT', t.lsp_type_definitions,               { buffer = buf, desc = 'Go to type definition' })
+    vim.keymap.set('n', '<leader>ds', t.lsp_document_symbols,       { buffer = buf, desc = 'Document symbols' })
+    vim.keymap.set('n', '<leader>ws', t.lsp_dynamic_workspace_symbols, { buffer = buf, desc = 'Workspace symbols' })
+    vim.keymap.set('n', 'K',          vim.lsp.buf.hover,            { buffer = buf, desc = 'Hover docs' })
+    vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename,           { buffer = buf, desc = 'Rename symbol' })
+    vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action,      { buffer = buf, desc = 'Code action' })
+    vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { buffer = buf, desc = 'Next diagnostic' })
+    vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { buffer = buf, desc = 'Prev diagnostic' })
   end,
 })
 
--- New UI opt-in
-require('vim._core.ui2').enable({})
-
--- Packages.
-vim.pack.add({
-  'https://github.com/folke/tokyonight.nvim',
-  'https://github.com/neovim/nvim-lspconfig',
-
-  -- Run `:TSInstall <language>` once installed to get that language's treesitter support.
-  -- Specify 'main' branch; 'master' is dep.
-  { src = 'https://github.com/nvim-treesitter/nvim-treesitter', 
-    version = 'main' }, 
-})
-
-vim.cmd[[colorscheme tokyonight]]
-
--- LSP.
-require'lspconfig'.ols.setup {}
-
+-- General Telescope keymaps
+local t = require('telescope.builtin')
+vim.keymap.set('n', '<leader>ff', t.find_files,  { desc = 'Find files' })
+vim.keymap.set('n', '<leader>fg', t.live_grep,   { desc = 'Live grep' })
+vim.keymap.set('n', '<leader>fb', t.buffers,     { desc = 'Buffers' })
