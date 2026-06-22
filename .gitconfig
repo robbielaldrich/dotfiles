@@ -5,13 +5,37 @@
   excludesFile = ~/.gitignore
   editor = vim
 [alias]
-  up = push -u origin HEAD
-  pu = push
-  cb = checkout -b 
-  s = status
-  pb = pull --rebase --prune
-  co = checkout
+  # one-line decorated log
+  l = log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=short
+  last = log -1 HEAD
+
+  a = add
+  ap = add -p
+  c = commit --verbose
+  ca = commit -a --verbose
   cm = commit
+  cam = commit -a -m
+  m = commit --amend --verbose
+
+  d = diff
+  ds = diff --stat
+  dc = diff --cached
+
+  s = status
+  co = checkout
+  cb = checkout -b
   ss = stash save
+  sl = stash list --date=relative
+  unstage = reset HEAD --
+
+  # branches sorted by last modified
+  b = "!git for-each-ref --sort='-authordate' --format='%(authordate)%09%(objectname:short)%09%(refname)' refs/heads | sed -e 's-refs/heads/--'"
+  # list aliases
+  la = "!git config -l | grep alias | cut -c 7-"
+
+  pu = push
+  up = push -u origin HEAD
+  pb = pull --rebase --prune
+  ffm = merge --ff-only origin/main
 [init]
   defaultBranch = main
