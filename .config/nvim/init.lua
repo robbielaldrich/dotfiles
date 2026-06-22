@@ -1,3 +1,5 @@
+-- Exported from dotfiles/.
+
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
@@ -19,6 +21,15 @@ vim.opt.ignorecase = true
 vim.opt.smartcase = true
 -- Configures the behavior of the insert mode completion menu.
 vim.opt.completeopt = 'menu,menuone,noselect,popup'
+-- Built-in autocompletion (Neovim 0.12+): show the completion menu as you type.
+-- Sources come from 'complete'; we append 'o' (omnifunc) so LSP candidates are
+-- included. Neovim sets omnifunc to vim.lsp.omnifunc on LSP attach, and the
+-- omnifunc path also applies accept-time side effects (snippet expansion,
+-- auto-import text edits, commands), so vim.lsp.completion.enable() is not
+-- needed. 'autocomplete' is buffer-scoped; we disable it in the Telescope
+-- prompt below.
+vim.o.autocomplete = true
+vim.opt.complete:append('o')
 -- Number of spaces that a <Tab> character represents.
 vim.opt.tabstop = 2
 -- Number of spaces to use for each step of automatic indentation.
@@ -33,9 +44,6 @@ vim.opt.smartindent = true
 vim.opt.smarttab = true
 -- Use the system clipboard for all yank/delete/put operations.
 vim.opt.clipboard:append('unnamedplus')
-
--- Enables the overall built-in neovim completion feature.
-vim.o.autocomplete = true
 
 -- New UI opt-in
 require('vim._core.ui2').enable({})
@@ -129,18 +137,8 @@ vim.api.nvim_create_autocmd('BufWritePre', {
 })
 
 vim.api.nvim_create_autocmd("LspAttach", {
-  group = vim.api.nvim_create_augroup("lsp_completion", { clear = true }),
+  group = vim.api.nvim_create_augroup("lsp_attach_keymaps", { clear = true }),
   callback = function(args)
-    local client_id = args.data.client_id
-    if not client_id then
-      return
-    end
-
-    local client = vim.lsp.get_client_by_id(client_id)
-    if client and client:supports_method("textDocument/completion") then
-      vim.lsp.completion.enable(true, client_id, args.buf, { autotrigger = true })
-    end
-
     local buf = args.buf
     local t = require('telescope.builtin')
     vim.keymap.set('n', 'gd', t.lsp_definitions,                    { buffer = buf, desc = 'Go to definition' })
@@ -154,6 +152,16 @@ vim.api.nvim_create_autocmd("LspAttach", {
     vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action,      { buffer = buf, desc = 'Code action' })
     vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { buffer = buf, desc = 'Next diagnostic' })
     vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { buffer = buf, desc = 'Prev diagnostic' })
+  end,
+})
+
+-- Disable the built-in auto-popup completion inside Telescope's prompt
+-- (the 'autocomplete' option is global but buffer-scoped, so it otherwise
+-- fires on every keystroke in the prompt and overlaps the picker results).
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = 'TelescopePrompt',
+  callback = function()
+    vim.bo.autocomplete = false
   end,
 })
 
