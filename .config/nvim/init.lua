@@ -31,6 +31,8 @@ vim.opt.expandtab = true
 vim.opt.smartindent = true
 -- Makes <Tab> insert 'shiftwidth' number of spaces at the start of a line.
 vim.opt.smarttab = true
+-- Use the system clipboard for all yank/delete/put operations.
+vim.opt.clipboard:append('unnamedplus')
 
 -- Enables the overall built-in neovim completion feature.
 vim.o.autocomplete = true
@@ -55,8 +57,76 @@ vim.pack.add({
 
 vim.cmd[[colorscheme tokyonight]]
 
--- LSP.
-require'lspconfig'.ols.setup {}
+-- LSP (native 0.12 vim.lsp.config/enable; configs ship with nvim-lspconfig).
+
+-- Go.
+vim.lsp.config('gopls', {
+  settings = {
+    gopls = {
+      gofumpt = true,
+      staticcheck = true,
+      analyses = {
+        unusedparams = true,
+      },
+    },
+  },
+})
+
+-- Python.
+vim.lsp.config('pyright', {
+  settings = {
+    python = {
+      analysis = {
+        autoSearchPaths = true,
+        useLibraryCodeForTypes = true,
+        diagnosticMode = 'workspace',
+      },
+    },
+  },
+})
+
+-- TypeScript / JavaScript.
+vim.lsp.config('ts_ls', {
+  settings = {
+    typescript = {
+      preferences = {
+        includePackageJsonAutoImports = 'auto',
+        importModuleSpecifier = 'relative',
+      },
+      suggest = {
+        includeCompletionsForModuleExports = true,
+      },
+    },
+    javascript = {
+      preferences = {
+        includePackageJsonAutoImports = 'auto',
+        importModuleSpecifier = 'relative',
+      },
+      suggest = {
+        includeCompletionsForModuleExports = true,
+      },
+    },
+  },
+})
+
+-- C / C++.
+vim.lsp.config('clangd', {})
+
+-- Bash.
+vim.lsp.config('bashls', {
+  cmd = { 'bash-language-server', 'start' },
+  filetypes = { 'bash', 'sh' },
+})
+
+vim.lsp.enable({ 'gopls', 'pyright', 'ts_ls', 'clangd', 'bashls' })
+
+-- Format Go files on save.
+vim.api.nvim_create_autocmd('BufWritePre', {
+  pattern = '*.go',
+  callback = function()
+    vim.lsp.buf.format({ async = false })
+  end,
+})
 
 vim.api.nvim_create_autocmd("LspAttach", {
   group = vim.api.nvim_create_augroup("lsp_completion", { clear = true }),
