@@ -30,6 +30,17 @@ vim.opt.completeopt = 'menu,menuone,noselect,popup'
 -- prompt below.
 vim.o.autocomplete = true
 vim.opt.complete:append('o')
+
+-- <Tab> accepts a completion when the popup menu is visible: if no item is
+-- selected yet (we use 'noselect'), pick the top result first, then confirm.
+-- When the menu is not visible, <Tab> behaves normally.
+vim.keymap.set('i', '<Tab>', function()
+  if vim.fn.pumvisible() == 0 then
+    return '<Tab>'
+  end
+  return vim.fn.complete_info({ 'selected' }).selected == -1 and '<C-n><C-y>' or '<C-y>'
+end, { expr = true })
+
 -- Number of spaces that a <Tab> character represents.
 vim.opt.tabstop = 2
 -- Number of spaces to use for each step of automatic indentation.

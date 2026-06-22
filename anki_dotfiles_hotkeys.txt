@@ -1,0 +1,19 @@
+#separator:Tab
+#html:false
+#tags column:3
+Telescope: find files by name?	Neovim setup: <leader>ff  (space f f)	dotfiles_hotkeys
+Telescope: live grep (search file contents)?	Neovim setup: <leader>fg  (space f g)	dotfiles_hotkeys
+Telescope: list/switch open buffers?	Neovim setup: <leader>fb  (space f b)	dotfiles_hotkeys
+LSP: go to definition?	Neovim setup: gd	dotfiles_hotkeys
+LSP: find references?	Neovim setup: gr	dotfiles_hotkeys
+LSP: go to implementation?	Neovim setup: gi	dotfiles_hotkeys
+LSP: go to type definition?	Neovim setup: gT	dotfiles_hotkeys
+LSP: list document symbols?	Neovim setup: <leader>ds  (space d s)	dotfiles_hotkeys
+LSP: search workspace symbols?	Neovim setup: <leader>ws  (space w s)	dotfiles_hotkeys
+LSP: show hover docs for symbol under cursor?	Neovim setup: K	dotfiles_hotkeys
+LSP: rename symbol?	Neovim setup: <leader>rn  (space r n)	dotfiles_hotkeys
+LSP: code action?	Neovim setup: <leader>ca  (space c a)	dotfiles_hotkeys
+Jump to next diagnostic?	Neovim setup: ]d	dotfiles_hotkeys
+Jump to previous diagnostic?	Neovim setup: [d	dotfiles_hotkeys
+Show the diagnostic under the cursor in a floating window?	Neovim setup: CTRL-W d  (vim.diagnostic.open_float)	dotfiles_hotkeys
+How do you install treesitter support for a language?	Neovim setup: :TSInstall <language>	dotfiles_hotkeys
