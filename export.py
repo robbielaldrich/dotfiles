@@ -6,10 +6,12 @@ from pathlib import Path
 TMUX_CONF = Path.home() / ".tmux.conf"
 NVIM_CONFIG = Path.home() / ".config/nvim"
 ZSHRC = Path.home() / ".zshrc"
+CLAUDE_SKILLS = Path.home() / ".claude/skills"
 
 here = Path(__file__).parent
 BREWFILE = here / "Brewfile"
 ZSHRC_SRC = here / ".zshrc"
+CLAUDE_SKILLS_SRC = here / "claude-skills"
 
 ZSHRC_MARKER = "# >>> personal dotfiles repo >>>"
 ZSHRC_END = "# <<< personal dotfiles repo <<<"
@@ -52,3 +54,11 @@ if BREWFILE.exists():
         subprocess.run(["brew", "bundle", f"--file={BREWFILE}"], check=True)
     else:
         print("Skipped brew bundle.")
+
+# Copy each managed skill into ~/.claude/skills, leaving any unmanaged skills
+# (installed elsewhere) untouched.
+if CLAUDE_SKILLS_SRC.exists():
+    for skill in sorted(p for p in CLAUDE_SKILLS_SRC.iterdir() if p.is_dir()):
+        dest = CLAUDE_SKILLS / skill.name
+        shutil.copytree(skill, dest, dirs_exist_ok=True)
+        print(f"Copied skill to {dest}")
