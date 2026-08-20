@@ -1,5 +1,3 @@
-tap "homebrew/bundle"
-
 # Fuzzy finder — interactive filtering for files, history, etc.
 brew "fzf"
 
