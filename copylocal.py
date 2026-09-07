@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+"""
+Script to copy local configuration into this repo for committing changes.
+"""
+
 import shutil
 from pathlib import Path
 
@@ -16,5 +20,6 @@ except shutil.SameFileError:
 dest = here / ".config/nvim"
 if dest.exists():
     shutil.rmtree(dest)
+
 shutil.copytree(NVIM_CONFIG, dest)
 print(f"Copied {NVIM_CONFIG}")

@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+"""
+Script to replace local system configuration files with those from this repository.
+"""
 import shutil
 import subprocess
 from pathlib import Path
@@ -8,7 +11,6 @@ NVIM_CONFIG = Path.home() / ".config/nvim"
 ZSHRC = Path.home() / ".zshrc"
 
 here = Path(__file__).parent
-BREWFILE = here / "Brewfile"
 ZSHRC_SRC = here / ".zshrc"
 
 ZSHRC_MARKER = "# >>> personal dotfiles repo >>>"
@@ -45,11 +47,4 @@ if ZSHRC_SRC.exists():
                 f"{ZSHRC_END}\n"
             )
         print(f"Appended dotfiles block to {ZSHRC}")
-
-if BREWFILE.exists():
-    answer = input(f"Run 'brew bundle' with {BREWFILE}? [y/N] ").strip().lower()
-    if answer == "y":
-        subprocess.run(["brew", "bundle", f"--file={BREWFILE}"], check=True)
-    else:
-        print("Skipped brew bundle.")
 
