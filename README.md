@@ -13,4 +13,6 @@ Copy:
 Add link in bin directory:
 `sudo ln -s /opt/nvim/bin/nvim /usr/local/bin/nvim`
 
+For fun: rename displayed hostname in terminals:
+`sudo scutil --set HostName`
 
