@@ -14,6 +14,10 @@ Copy:
 Add link in bin directory:
 `sudo ln -s /opt/nvim/bin/nvim ~/.local/bin/nvim`
 
+### Go
+
+https://go.dev/dl/
+
 ### For fun
 
 Rename displayed hostname in terminals:

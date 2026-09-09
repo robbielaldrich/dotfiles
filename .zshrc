@@ -4,3 +4,4 @@ alias lta="ls -lta"
 
 alias nv="nvim"
 
+export PATH=$PATH:~/.local/bin
