@@ -14,6 +14,10 @@ Copy:
 Add link in bin directory:
 `sudo ln -s /opt/nvim/bin/nvim ~/.local/bin/nvim`
 
+### just
+
+`curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to ~/.local/bin`
+
 ### Go
 
 https://go.dev/dl/
