@@ -6,20 +6,22 @@ Script to copy local configuration into this repo for committing changes.
 import shutil
 from pathlib import Path
 
-TMUX_CONF = Path.home() / ".tmux.conf"
-NVIM_CONFIG = Path.home() / ".config/nvim"
 
-here = Path(__file__).parent
+def copy_local(src, dest):
+    if dest.exists():
+        if dest.is_dir():
+            shutil.rmtree(dest)
+        else:
+            dest.unlink()
+    if src.is_dir():
+        shutil.copytree(src, dest)
+    else:
+        shutil.copy2(src, dest)
+    print(f"Copied {src} to {dest}")
 
-try:
-    shutil.copy2(TMUX_CONF, here / ".tmux.conf")
-    print(f"Copied {TMUX_CONF}")
-except shutil.SameFileError:
-    print(f"Skipped {TMUX_CONF} (already the same file)")
 
-dest = here / ".config/nvim"
-if dest.exists():
-    shutil.rmtree(dest)
+if __name__ == "__main__":
+    here = Path(__file__).parent
 
-shutil.copytree(NVIM_CONFIG, dest)
-print(f"Copied {NVIM_CONFIG}")
+    copy_local(Path.home() / ".tmux.conf", here / ".tmux.conf")
+    copy_local(Path.home() / ".config/nvim", here / ".config/nvim")
