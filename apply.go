@@ -34,13 +34,15 @@ func main() {
 }
 
 func apply(homeDir, dotfilesDir *os.Root) error {
-	zshrc, err := dotfilesDir.ReadFile(".zshrc")
-	if err != nil {
-		return fmt.Errorf("failed to read dotfiles zshrc: %w", err)
-	}
+	for _, f := range []string{".zshrc", ".zshenv"} {
+		zshrc, err := dotfilesDir.ReadFile(".zshrc")
+		if err != nil {
+			return fmt.Errorf("failed to read file '%s' dotfiles : %w", f, err)
+		}
 
-	if err := homeDir.WriteFile(".zshrc", zshrc, fs.ModePerm); err != nil {
-		return fmt.Errorf("failed to write zshrc: %w", err)
+		if err := homeDir.WriteFile(".zshrc", zshrc, fs.ModePerm); err != nil {
+			return fmt.Errorf("failed to write file '%s': %w", f, err)
+		}
 	}
 
 	return nil

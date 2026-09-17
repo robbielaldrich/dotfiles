@@ -4,8 +4,6 @@ alias lta="ls -lta"
 
 alias nv="nvim"
 
-export PATH=$PATH:~/.local/bin
-
 if [[ "$(uname)" == "Darwin" ]]; then
   # Faster key repeat (requires logout/login to take full effect)
   defaults write NSGlobalDomain KeyRepeat -int 2
