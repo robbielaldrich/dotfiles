@@ -23,8 +23,13 @@ func TestApply(t *testing.T) {
 	}
 
 	dotfilesZshrc := []byte("some zshrc stuff")
+	dotfilesZshenv := []byte("other zshenv stuff")
 
 	if err := mockDotfiles.WriteFile(".zshrc", dotfilesZshrc, fs.ModePerm); err != nil {
+		log.Fatalf("failed to write file: %s", err)
+	}
+
+	if err := mockDotfiles.WriteFile(".zshenv", dotfilesZshenv, fs.ModePerm); err != nil {
 		log.Fatalf("failed to write file: %s", err)
 	}
 
@@ -39,5 +44,14 @@ func TestApply(t *testing.T) {
 
 	if !bytes.Equal(dotfilesZshrc, appliedZshrc) {
 		log.Fatalf("applied zshrc value '%s' not equal to dotfiles zshrc '%s'", string(appliedZshrc), string(dotfilesZshrc))
+	}
+
+	appliedZshenv, err := mockHome.ReadFile(".zshenv")
+	if err != nil {
+		log.Fatalf("failed to read file: %s", err)
+	}
+
+	if !bytes.Equal(dotfilesZshenv, appliedZshenv) {
+		log.Fatalf("applied zshenv value '%s' not equal to dotfiles zshenv '%s'", string(appliedZshenv), string(dotfilesZshenv))
 	}
 }
