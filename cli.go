@@ -53,18 +53,60 @@ func copyLocal(home, dotfiles *os.Root) error {
 }
 
 func exec(dst, src *os.Root) error {
-	for _, f := range []string{".zshrc", ".zshenv"} {
-		data, err := src.ReadFile(f)
-		if err != nil {
-			return fmt.Errorf("failed to read source file '%s': %w", f, err)
+	for _, f := range []struct {
+		path  string
+		isDir bool
+	}{
+		{path: ".zshrc"},
+		{path: ".zshenv"},
+		{path: ".config/nvim", isDir: true},
+	} {
+		if f.isDir {
+			if err := copyDir(dst, src, f.path); err != nil {
+				return fmt.Errorf("failed to copy source directory '%s': %w", f.path, err)
+			}
+
+			continue
 		}
 
-		if err := dst.WriteFile(f, data, fs.ModePerm); err != nil {
-			return fmt.Errorf("failed to write destination file '%s': %w", f, err)
+		data, err := src.ReadFile(f.path)
+		if err != nil {
+			return fmt.Errorf("failed to read source file '%s': %w", f.path, err)
+		}
+
+		if err := dst.WriteFile(f.path, data, fs.ModePerm); err != nil {
+			return fmt.Errorf("failed to write destination file '%s': %w", f.path, err)
 		}
 	}
 
 	return nil
+}
+
+func copyDir(dst, src *os.Root, dir string) error {
+	return fs.WalkDir(src.FS(), dir, func(path string, d fs.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+
+		if d.IsDir() {
+			if err := dst.MkdirAll(path, fs.ModePerm); err != nil {
+				return fmt.Errorf("failed to create destination directory '%s': %w", path, err)
+			}
+
+			return nil
+		}
+
+		data, err := src.ReadFile(path)
+		if err != nil {
+			return fmt.Errorf("failed to read source file '%s': %w", path, err)
+		}
+
+		if err := dst.WriteFile(path, data, fs.ModePerm); err != nil {
+			return fmt.Errorf("failed to write destination file '%s': %w", path, err)
+		}
+
+		return nil
+	})
 }
 
 
