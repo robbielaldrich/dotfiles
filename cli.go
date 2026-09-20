@@ -60,6 +60,7 @@ func exec(dst, src *os.Root) error {
 		{path: ".zshrc"},
 		{path: ".zshenv"},
 		{path: ".config/nvim", isDir: true},
+		{path: ".agents", isDir: true},
 	} {
 		if f.isDir {
 			if err := copyDir(dst, src, f.path); err != nil {
