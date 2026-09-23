@@ -1,5 +1,3 @@
--- Exported from dotfiles/.
-
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
