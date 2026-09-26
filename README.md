@@ -25,6 +25,10 @@ Add link in bin directory:
 Install tree-sitter CLI:
 https://github.com/tree-sitter/tree-sitter/releases/
 
+Install LuaLS:
+Download [LuaLS](https://github.com/LuaLS/lua-language-server/releases/); unzip to `/opt/lua-language-server`.
+`/opt/lua-language-server/bin` is added to PATH in `.zshenv` (don't symlink it into `~/.local/bin`; see comment there).
+
 Check lsps: `:checkhealth vim.lsp`
 
 ### just
