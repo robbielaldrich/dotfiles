@@ -4,16 +4,16 @@ vim.g.maplocalleader = ' '
 -- Options -------------------------------------------------------------------
 
 -- UI
-vim.opt.number = true   -- Show the line number for the current line.
-vim.opt.cmdheight = 0   -- Hide the command line when it isn't in use.
+vim.opt.number = true -- Show the line number for the current line.
+vim.opt.cmdheight = 0 -- Hide the command line when it isn't in use.
 
 -- Timing (ms)
-vim.opt.timeoutlen = 500   -- Wait this long for a mapped key sequence to complete.
-vim.opt.updatetime = 4000  -- Idle time before CursorHold fires / swap is written.
+vim.opt.timeoutlen = 500  -- Wait this long for a mapped key sequence to complete.
+vim.opt.updatetime = 4000 -- Idle time before CursorHold fires / swap is written.
 
 -- Search
-vim.opt.ignorecase = true  -- Case-insensitive search...
-vim.opt.smartcase = true   -- ...unless the pattern contains a capital letter.
+vim.opt.ignorecase = true -- Case-insensitive search...
+vim.opt.smartcase = true  -- ...unless the pattern contains a capital letter.
 
 -- Indentation: 2 spaces, never tabs
 vim.opt.tabstop = 2        -- Width of a literal <Tab> character.
@@ -26,6 +26,16 @@ vim.opt.smarttab = true    -- <Tab> at line start indents by 'shiftwidth'.
 -- Clipboard
 vim.opt.clipboard:append('unnamedplus') -- Yank/delete/put use the system clipboard.
 
+-- Remap '-' to explore parent directory of file, resuming existing netrw if exists.
+vim.keymap.set('n', '-', function()
+  local ok = pcall(function()
+    vim.cmd.Rexplore()
+  end)
+  if not ok then
+    vim.cmd('Explore')
+  end
+end, { desc = 'Go to netrw directory view' })
+
 -- Completion ----------------------------------------------------------------
 
 -- Built-in autocompletion (Neovim 0.12+) shows the completion menu as you type.
@@ -37,6 +47,7 @@ vim.opt.clipboard:append('unnamedplus') -- Yank/delete/put use the system clipbo
 --
 -- 'autocomplete' is buffer-scoped; it's disabled in the Telescope prompt below.
 vim.o.autocomplete = true
+vim.opt.completeopt = { 'menuone', 'noselect', 'popup' }
 vim.opt.complete:append('o')
 
 -- <Tab> accepts a completion when the popup menu is visible. With 'noselect',
@@ -135,17 +146,17 @@ vim.api.nvim_create_autocmd('LspAttach', {
     end
 
     local t = require('telescope.builtin')
-    vim.keymap.set('n', 'gd', t.lsp_definitions,                       { buffer = buf, desc = 'Go to definition' })
-    vim.keymap.set('n', 'gr', t.lsp_references,                        { buffer = buf, desc = 'Find references' })
-    vim.keymap.set('n', 'gi', t.lsp_implementations,                   { buffer = buf, desc = 'Go to implementation' })
-    vim.keymap.set('n', 'gT', t.lsp_type_definitions,                  { buffer = buf, desc = 'Go to type definition' })
-    vim.keymap.set('n', '<leader>ds', t.lsp_document_symbols,          { buffer = buf, desc = 'Document symbols' })
+    vim.keymap.set('n', 'gd', t.lsp_definitions, { buffer = buf, desc = 'Go to definition' })
+    vim.keymap.set('n', 'gr', t.lsp_references, { buffer = buf, desc = 'Find references' })
+    vim.keymap.set('n', 'gi', t.lsp_implementations, { buffer = buf, desc = 'Go to implementation' })
+    vim.keymap.set('n', 'gT', t.lsp_type_definitions, { buffer = buf, desc = 'Go to type definition' })
+    vim.keymap.set('n', '<leader>ds', t.lsp_document_symbols, { buffer = buf, desc = 'Document symbols' })
     vim.keymap.set('n', '<leader>ws', t.lsp_dynamic_workspace_symbols, { buffer = buf, desc = 'Workspace symbols' })
-    vim.keymap.set('n', 'K', vim.lsp.buf.hover,                        { buffer = buf, desc = 'Hover docs' })
-    vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename,              { buffer = buf, desc = 'Rename symbol' })
-    vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action,         { buffer = buf, desc = 'Code action' })
-    vim.keymap.set('n', ']d', vim.diagnostic.goto_next,                { buffer = buf, desc = 'Next diagnostic' })
-    vim.keymap.set('n', '[d', vim.diagnostic.goto_prev,                { buffer = buf, desc = 'Prev diagnostic' })
+    vim.keymap.set('n', 'K', vim.lsp.buf.hover, { buffer = buf, desc = 'Hover docs' })
+    vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, { buffer = buf, desc = 'Rename symbol' })
+    vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, { buffer = buf, desc = 'Code action' })
+    vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { buffer = buf, desc = 'Next diagnostic' })
+    vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { buffer = buf, desc = 'Prev diagnostic' })
   end,
 })
 
@@ -162,5 +173,5 @@ vim.api.nvim_create_autocmd('FileType', {
 
 local t = require('telescope.builtin')
 vim.keymap.set('n', '<leader>ff', t.find_files, { desc = 'Find files' })
-vim.keymap.set('n', '<leader>fg', t.live_grep,  { desc = 'Live grep' })
-vim.keymap.set('n', '<leader>fb', t.buffers,    { desc = 'Buffers' })
+vim.keymap.set('n', '<leader>fg', t.live_grep, { desc = 'Live grep' })
+vim.keymap.set('n', '<leader>fb', t.buffers, { desc = 'Buffers' })
