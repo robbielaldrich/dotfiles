@@ -1,4 +1,4 @@
-package main 
+package main
 
 import (
 	"fmt"
@@ -6,7 +6,6 @@ import (
 	"log"
 	"os"
 )
-
 
 func main() {
 	var f func(homeRoot, dotfilesRoot *os.Root) error
@@ -17,7 +16,7 @@ func main() {
 		f = copyLocal
 	} else {
 		log.Fatalf("provide command and no additional arguments")
-	} 
+	}
 
 	homePath, err := os.UserHomeDir()
 	if err != nil {
@@ -59,6 +58,7 @@ func exec(dst, src *os.Root) error {
 	}{
 		{path: ".zshrc"},
 		{path: ".zshenv"},
+		{path: ".tmux.conf"},
 		{path: ".config/nvim", isDir: true},
 		{path: ".agents", isDir: true},
 	} {
@@ -109,5 +109,3 @@ func copyDir(dst, src *os.Root, dir string) error {
 		return nil
 	})
 }
-
-
